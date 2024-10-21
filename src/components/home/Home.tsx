@@ -5,6 +5,7 @@ import Perfil from './sections/Perfil';
 import { User } from '../../interfaces/user';
 import Users from './sections/Users';
 import Tweets from './sections/Tweets';
+import { TailSpin } from 'react-loader-spinner'
 import './style.css'
 function Home() {
     const {
@@ -31,12 +32,18 @@ function Home() {
     }, [])
     return (
         <div className='container-home'>
-            {userInfo &&
+            {userInfo ?
                 <>
                     <Perfil user={userInfo} />
                     <Tweets user={userInfo} />
                     <Users user={userInfo} setUserProfile={setUserProfile} />
-                </>
+                </> :
+                <TailSpin
+                    visible={true}
+                    height="80"
+                    width="80"
+                    color="#fff"
+                />
             }
         </div>
     )

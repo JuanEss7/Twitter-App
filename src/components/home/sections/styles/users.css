@@ -98,7 +98,6 @@
 
 .section_users .container-modal {
     position: fixed;
-    z-index: 20;
     top: 0;
     left: 0;
     width: 100dvw;
@@ -108,6 +107,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: -1;
+    opacity: 0;
+    transition: all .2s ease;
 
     & .icon_close_modal {
         position: fixed;
@@ -162,6 +164,11 @@
         justify-content: flex-start;
         gap: 0;
     }
+}
+
+.container-modal.visible {
+    opacity: 1;
+    z-index: 20;
 }
 
 @media screen and (width>=850px) {

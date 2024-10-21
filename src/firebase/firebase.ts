@@ -3,12 +3,12 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from 'firebase/auth'
 import { getStorage } from 'firebase/storage'
 const firebaseConfig = {
-    apiKey: "AIzaSyCJ_80TiHGwRULrFyByhDR3XL7JjhpjoCA",
-    authDomain: "twitter-app-c5177.firebaseapp.com",
-    projectId: "twitter-app-c5177",
-    storageBucket: "twitter-app-c5177.appspot.com",
-    messagingSenderId: "174936740945",
-    appId: "1:174936740945:web:fa930832a942b201649470"
+    apiKey: process.env.API_KEY ?? "",
+    authDomain: process.env.AUTH_DOMAIN ?? "",
+    projectId: process.env.PROYECT_ID ?? "",
+    storageBucket: process.env.STORAGE_BUCKET ?? "",
+    messagingSenderId: process.env.MESSAGING_SENDER_ID ?? "",
+    appId: process.env.APP_ID ?? ""
 };
 
 

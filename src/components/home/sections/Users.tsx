@@ -141,7 +141,7 @@ function Users({ user, setUserProfile }: Props) {
                     }
                 </ul>
 
-                {(userModalInfo && showModal) && <div className='container-modal'>
+                {(userModalInfo && showModal) && <div className={`container-modal ${showModal ? 'visible' : ''}`}>
                     <IoMdClose className='icon_close_modal' fill='#fff' size={30} onClick={() => setShowModal(false)} />
                     <div className='container_user_info_modal'>
                         <img
@@ -173,7 +173,8 @@ function Users({ user, setUserProfile }: Props) {
                             }
                         </ul>
                     </div>
-                </div>}
+                </div>
+                }
             </div>
         </aside>
     )
