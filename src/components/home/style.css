@@ -1,0 +1,175 @@
+.container-home {
+    position: relative;
+    width: 100dvw;
+    height: fit-content;
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 0 .5rem;
+    padding-top: 3rem;
+}
+
+.buttonFollow {
+    font-size: .7rem;
+    border-radius: 60px;
+    width: fit-content;
+
+    &.following {
+        background-color: transparent;
+        color: #fff;
+        border-color: #fff;
+
+        &:hover {
+            background-color: rgba(129, 9, 9, 0.411);
+            color: red;
+            border-color: red;
+        }
+    }
+
+    &.following>span:last-child {
+        display: none;
+    }
+
+    &.following:hover>span:first-child {
+        display: none;
+    }
+
+    &.following:hover>span:last-child {
+        display: inline-block;
+    }
+}
+
+.tweet {
+    padding: .5rem .3rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+    height: fit-content;
+    border: 1px solid rgba(255, 255, 255, 0.298);
+
+    &>img {
+        width: 40px;
+        height: 40px;
+        border-radius: 99999px;
+    }
+
+    & div {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: .5rem;
+
+        & div {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: start;
+        }
+
+        & button {
+            width: fit-content;
+        }
+
+        & img {
+            width: 100%;
+            border-radius: 10px;
+            height: 250px;
+            object-fit: contain;
+        }
+
+        & .icons_container {
+            width: 100%;
+            height: fit-content;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: .5rem;
+            position: relative;
+
+            & .icons_container-div {
+                border: none;
+                width: 60px;
+                height: 100%;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+
+                &.delete {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+
+                    & .icon:hover {
+                        color: rgba(255, 0, 0, 0.605);
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (width>=850px) {
+    .container-home {
+        grid-template-columns: 1fr 3fr 1fr;
+        width: 90dvw;
+        gap: 0;
+
+        & aside {
+            position: static;
+
+            & label {
+                display: none;
+            }
+        }
+    }
+
+    .section_perfil {
+        & .content_user {
+            display: flex;
+            z-index: 0;
+            width: 100%;
+        }
+
+        &:has(input[type='checkbox']:checked) {
+            width: 100%;
+        }
+    }
+
+    .section_tweets .tweets {
+        & li {
+            &>div {
+                & img {
+                    width: 80%;
+                    height: 400px;
+                    align-self: center;
+                    object-fit: contain;
+                }
+            }
+        }
+    }
+
+    .section_users {
+        width: 100%;
+
+        &:has(input[type='checkbox']:checked) {
+            width: 100%;
+        }
+
+        & .content_search_user {
+            display: flex;
+            z-index: 0;
+            width: 100%;
+
+            & div {
+                padding: 0;
+
+                & input {
+                    margin: 0;
+                    padding: .8rem .5rem;
+                }
+            }
+        }
+    }
+}

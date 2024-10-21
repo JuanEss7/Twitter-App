@@ -1,0 +1,25 @@
+.form_nickname {
+    margin: 0 auto;
+}
+
+.form_nickname img {
+    background-color: #ccc;
+    height: 200px;
+    border-radius: 100%;
+}
+
+.form_nickname input[type='file'] {
+    display: none;
+}
+
+.form_nickname input {
+    border: 1px solid;
+    border-radius: 5px;
+    width: 100%;
+    background-color: transparent;
+    padding: .5rem .6rem;
+
+    &:focus {
+        outline: none;
+    }
+}
