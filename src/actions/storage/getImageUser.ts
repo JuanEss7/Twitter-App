@@ -4,11 +4,9 @@ interface Props {
     photoURL: string
 }
 export async function getUserImageOfStorage({ photoURL }: Props) {
-    console.log({ photoURL })
     try {
         const imageRef = ref(storage, photoURL);
         const imageUrl = await getDownloadURL(imageRef);
-        console.log({ imageUrl })
         return {
             ok: true,
             imageUrl

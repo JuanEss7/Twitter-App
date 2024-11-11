@@ -28,10 +28,10 @@ function Perfil({ user }: Props) {
                 {!check ? <FaArrowRight width={30} /> : <FaArrowLeft width={30} />}
             </label>
             {user && <div className='content_user'>
-                <img src={user.photoURL} alt={`Imagen de perfil de ${user?.name}`} />
+                <img src={user.photoURL!} alt={`Imagen de perfil de ${user.name}`} />
                 <h3>{user?.name}</h3>
-                <span className='nick'>@{user?.nick}</span>
-                <p><span style={{ fontWeight: 'bold' }}>{user.following.length}</span> Siguiendo</p>
+                <span className='nick'>@{user.nick}</span>
+                <p><span style={{ fontWeight: 'bold' }}>{user.following?.length ?? 0}</span> Siguiendo</p>
                 <button type='button' onClick={handleClick}>Salir</button>
             </div>}
         </aside>
