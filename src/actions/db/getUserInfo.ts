@@ -1,5 +1,6 @@
 import { collection, getDocs, limit, query, where } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
+import { User } from "../../interfaces/user";
 
 export async function getUserInfoByNick(nick: string) {
     try {
@@ -36,7 +37,7 @@ export async function getUserInfoById(uid: string) {
                 message: `El usuario no existe.`
             }
         }
-        const userInfo = querySnapshot.docs[0].data();
+        const userInfo = querySnapshot.docs[0].data() as User;
         return {
             find: true,
             userInfo

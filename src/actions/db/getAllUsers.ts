@@ -7,7 +7,6 @@ interface Props {
 }
 export async function getAllUsersOfDb({ uid }: Props) {
     try {
-        console.log({ uid })
         const dbRef = collection(db, 'users');
         const q = query(dbRef, where('uid', '!=', uid));
         const userDocs = await getDocs(q);

@@ -3,7 +3,7 @@ import { User } from "../../interfaces/user";
 import { db } from "../../firebase/firebase";
 
 interface Props {
-    newInfoUser: User | { [x: string]: any }
+    newInfoUser: User 
 }
 export async function updateUser({ newInfoUser }: Props) {
     if (!newInfoUser) {

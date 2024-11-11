@@ -7,7 +7,8 @@ export async function addUserToDb(user: User) {
         const docUser = doc(dbRef, user.uid);
         await setDoc(docUser, user)
         return {
-            ok: true
+            ok: true,
+            message: ''
         }
     } catch (error) {
         console.log(error)
