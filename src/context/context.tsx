@@ -8,11 +8,12 @@ import { notification } from "../utils/notification";
 import { updateInfoTweet } from "../actions/user/updateInfoTweet";
 import { Tweet } from "../interfaces/tweet";
 import { getAllTweets } from "../actions/db/tweets/getAllTweets";
+import { ContextInterface } from "../interfaces/context";
 interface ContextProviderProps {
     children: ReactNode;
 }
 
-export const Context = createContext(null);
+export const Context = createContext<ContextInterface | null>(null);
 
 export default function ContextProvider({ children }: ContextProviderProps) {
     const [user, setUser] = useState<User | null>(null);
@@ -60,7 +61,10 @@ export default function ContextProvider({ children }: ContextProviderProps) {
         setDataTweets(newDataTweets)
         return
     }
-    function setUserProfile(user: User) {
+    function updateDataTweets(tweet: Tweet) {
+        setDataTweets(prev => [tweet, ...prev])
+    }
+    function setUserProfile(user: User | null) {
         setUser(user)
     }
     useEffect(() => {
@@ -79,7 +83,7 @@ export default function ContextProvider({ children }: ContextProviderProps) {
             user,
             setUserProfile,
             dataTweets,
-            setDataTweets,
+            updateDataTweets,
             handleClickDeleteTweet,
             handleClickUpdateTweet,
             fillStateDataTweets

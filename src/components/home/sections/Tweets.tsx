@@ -1,22 +1,20 @@
 import { IoImageOutline } from "react-icons/io5";
 import { BsStars } from "react-icons/bs";
 import { FaTwitter } from "react-icons/fa";
-import { FormEvent, useContext, useEffect, useRef, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useFileReader } from "../../../hooks/useFileReader";
 import { notification } from "../../../utils/notification";
-import { saveTweetPhotoInStorage } from "../../../actions/storage/tweets/saveTweetImage";
 import { Tweet } from '../../../interfaces/tweet';
 import { User } from "../../../interfaces/user";
-import { addTweet } from "../../../actions/db/tweets/addTweet";
-import { getTweetImageOfStorage } from "../../../actions/storage/tweets/getImageTweet";
 import TweetComponent from "./components/Tweet";
+import { makeTweet } from "./functions/tweets/MakeTweet";
 import './styles/tweets.css'
-import { Context } from "../../../context/context";
 interface Props {
     user: User,
+    dataTweets: Tweet[]
+    updateDataTweets: (tweet: Tweet) => void
 }
-function Tweets({ user }: Props) {
-    const { dataTweets, setDataTweets } = useContext(Context);
+function Tweets({ user, dataTweets, updateDataTweets }: Props) {
     const inputFileRef = useRef<HTMLInputElement | null>(null);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [src, setSrc] = useState<string | undefined>();
@@ -37,47 +35,15 @@ function Tweets({ user }: Props) {
         const form = e.target as HTMLFormElement;
         const data = new FormData(form);
         const tweet = data.get('tweet') as string;
-        const tweetId = crypto.randomUUID();
-        let imageTweetUrl;
-        if (src) {
-            const response = await saveTweetPhotoInStorage({ base64: result, image: imageFile, tweetId })
-            if (!response?.ok) {
-                notification({ message: 'Ocurrio un error al subir la imagen del tweet, intentalo mas tarde', type: 'error' });
-                return
-            }
-            const urlImg = response.uploadRef?.metadata.fullPath;
-            const { ok, imageUrl, message } = await getTweetImageOfStorage({ photoURL: urlImg! });
-            if (!ok) {
-                notification({ message, type: 'error' });
-                return
-            }
-            imageTweetUrl = imageUrl;
-        }
-        const date = new Date().toDateString().split(' ');
-        const newTweet: Tweet = {
-            uid: user.uid,
-            tweetId,
-            photoUser: user.photoURL!,
-            nick: user.nick!,
-            name: user.name!,
-            date: `${date[2]} ${date[1]} ${date[3]}`,
-            tweet,
-            imageTweet: imageTweetUrl ?? '',
-            like: [],
-            retweet: []
-        }
-        console.log({ newTweet, imageTweetUrl })
-        //Agregar tweet a la base de datos
-        const success = await addTweet({ tweet: newTweet });
-        if (!success) {
-            notification({ message: 'Ocurrio un error al hacer el tweet, intentalo mas tarde', type: 'error' });
-            return
-        }
+        if (!src || !imageFile || typeof src !== 'string') return
+        const newTweet = await makeTweet({ src, imageFile, tweet, user })
         //Actualizar el estado
-        setDataTweets(prev => [newTweet, ...prev])
-        setSrc(undefined);
-        setFileReader(undefined)
-        data.set('tweet', '')
+        if (newTweet) {
+            updateDataTweets(newTweet)
+            setSrc(undefined);
+            setFileReader(undefined)
+            data.set('tweet', '')
+        }
     }
     useEffect(() => {
         if (errorMessage) {
@@ -91,7 +57,7 @@ function Tweets({ user }: Props) {
         <main className='section_tweets'>
             <div><FaTwitter size={20} /><BsStars size={20} /></div>
             <form className='container_make_tweet' onSubmit={handleSubmit}>
-                <img src={user?.photoURL} alt="Imagen del usuario" />
+                <img src={user.photoURL!} alt="Imagen del usuario" />
                 <div className="container_tweet">
                     <textarea name='tweet' placeholder='Escribe algo...' />
                     {src && <img className='image_tweet' src={src} alt="Imagen de tweet" />}

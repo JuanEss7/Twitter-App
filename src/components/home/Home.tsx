@@ -8,15 +8,23 @@ import Tweets from './sections/Tweets';
 import { TailSpin } from 'react-loader-spinner'
 import './style.css'
 function Home() {
-    const {
-        user,
-        setUserProfile,
-        fillStateDataTweets
-    } = useContext(Context);
+    const context = useContext(Context);
     const [userInfo, setUserInfo] = useState<User>()
     const navigate = useNavigate();
     useEffect(() => {
-        console.log({ user })
+        if (!context) {
+            navigate("/")
+            return
+        }
+        const { fillStateDataTweets } = context;
+        fillStateDataTweets()
+    }, [context, navigate])
+    useEffect(() => {
+        if (!context) {
+            navigate("/login");
+            return;
+        }
+        const { user } = context;
         if (user === null) {
             navigate('/login')
             return
@@ -26,17 +34,23 @@ function Home() {
             return
         }
         setUserInfo(user)
-    }, [navigate, user])
-    useEffect(() => {
-        fillStateDataTweets()
-    }, [])
+    }, [navigate, context])
+
     return (
         <div className='container-home'>
-            {userInfo ?
+            {userInfo && context ?
                 <>
                     <Perfil user={userInfo} />
-                    <Tweets user={userInfo} />
-                    <Users user={userInfo} setUserProfile={setUserProfile} />
+                    <Tweets
+                        user={userInfo}
+                        dataTweets={context.dataTweets}
+                        updateDataTweets={context.updateDataTweets}
+                    />
+                    <Users
+                        user={userInfo}
+                        setUserProfile={context.setUserProfile}
+                        dataTweets={context.dataTweets}
+                    />
                 </> :
                 <TailSpin
                     visible={true}

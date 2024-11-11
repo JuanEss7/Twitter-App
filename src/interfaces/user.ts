@@ -3,6 +3,6 @@ export interface User {
     email: string | null,
     nick?: string,
     name?: string,
-    photoURL?: string,
-    following: string[],
+    photoURL?: string | null,
+    following?: string[],
 }
