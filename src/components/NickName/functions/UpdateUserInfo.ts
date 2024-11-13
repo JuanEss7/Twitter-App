@@ -9,13 +9,13 @@ import { User } from "../../../interfaces/user";
 interface Props {
     context: ContextInterface,
     imageToSave: File,
-    result: string,
+    base64: string,
     nick: string,
     name: string
 }
-export async function updateUserInfo({ context, imageToSave, name, nick, result }: Props) {
+export async function updateUserInfo({ context, imageToSave, name, nick, base64 }: Props) {
     const { user, setUserProfile } = context;
-    const { ok, uploadRef } = await setUserPhotoInStorage({ uid: user!.uid, image: imageToSave, base64: result });
+    const { ok, uploadRef } = await setUserPhotoInStorage({ uid: user!.uid, image: imageToSave, base64 });
     if (!ok) {
         notification({ message: 'Ocurrio un error al subir la imagen.', type: 'error' });
         return

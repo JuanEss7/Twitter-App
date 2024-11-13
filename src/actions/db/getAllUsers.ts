@@ -11,7 +11,6 @@ export async function getAllUsersOfDb({ uid }: Props) {
         const q = query(dbRef, where('uid', '!=', uid));
         const userDocs = await getDocs(q);
         const usersInDb = userDocs.docs.map(doc => doc.data()) as User[];
-        console.log({ usersInDb })
         return {
             ok: true,
             usersInDb

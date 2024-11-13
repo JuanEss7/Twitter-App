@@ -7,8 +7,6 @@ interface Props {
     user: User
 }
 export async function updateInfoTweet({ tweet, action, user }: Props) {
-    console.log('click')
-    console.log(action)
     if (action === 'like') {
         const likesArray = !tweet.like.includes(user.uid) ? [...tweet.like, user.uid] : tweet.like.filter(id => id !== user.uid)
         const newTweet: Tweet = { ...tweet, like: likesArray };

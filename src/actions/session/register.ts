@@ -19,6 +19,7 @@ export async function registerUserWithEmail({ email, password }: Props) {
         await addUserToDb(user)
         return {
             ok: true,
+            user
         }
     } catch (err) {
         if (err instanceof FirebaseError) {

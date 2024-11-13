@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { notification } from '../../utils/notification';
 import { useFileReader } from '../../hooks/useFileReader';
 import defaultImage from '/perfil.webp'
-import './style.css'
 import { updateUserInfo } from './functions/UpdateUserInfo';
+import './style.css'
 function NickName() {
     const context = useContext(Context);
     const [imageToSave, setImageToSave] = useState<File>()//imagen firebase
@@ -19,6 +19,7 @@ function NickName() {
         if (!inputFile) {
             return;
         }
+        console.log({ inputFile })
         setImageToSave(inputFile)
         setFileReader(inputFile)
     }
@@ -29,11 +30,14 @@ function NickName() {
         inputRef?.current?.click()
     }
     useEffect(() => {
+        console.log("nickanme")
         if (!context) {
+            console.log("sadasdas")
             navigate('/')
             return
         }
         const { user } = context;
+        console.log({ user })
         if (!user) {
             navigate('/')
             return
@@ -56,11 +60,12 @@ function NickName() {
         const data = new FormData(form);
         const nick = data.get('nickname') as string;
         const name = data.get('name') as string;
-        if (!nick || name) {
+        if (!nick || !name) {
             notification({ message: 'Completa los campos por favor', type: 'error' });
             return
         }
-        await updateUserInfo({ context: context!, imageToSave: imageToSave!, name, nick, result: src })
+        console.log({ imageToSave: imageToSave?.name })
+        await updateUserInfo({ context: context!, imageToSave: imageToSave!, name, nick, base64: result! })
         navigate(`/home/${nick}`)
     }
     return (

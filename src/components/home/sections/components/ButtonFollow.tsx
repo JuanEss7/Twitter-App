@@ -2,24 +2,22 @@ import { User } from '../../../../interfaces/user'
 interface Props {
     user: User,
     following: string[],
-    setFollowing: React.Dispatch<React.SetStateAction<string[]>>,
-    style?: { [x: any]: string }
+    style?: React.CSSProperties
+    updateUsersFollowing: (users: string[]) => void,
 }
-function ButtonFollow({ user, following, setFollowing, style }: Props) {
+function ButtonFollow({ user, following, updateUsersFollowing, style }: Props) {
     function handleClick(userid: string) {
-        console.log({ userid, user })
         //Verificar si ya esta siguiendo al usuario.
         // const isFollow = user.follow.includes(userid);
         const isFollowing = following.includes(userid);
         const newArray = structuredClone(following);
-        //Agregar o eliminar una vez verificado
-        console.log({ isFollowing })
+        //Agregar o eliminar una vez verificado)
         if (isFollowing) {
-            setFollowing(newArray.filter(id => id !== userid))
+            updateUsersFollowing(newArray.filter(id => id !== userid))
             return
         } else {
             newArray.push(userid)
-            setFollowing(newArray)
+            updateUsersFollowing(newArray)
             return
         }
     }

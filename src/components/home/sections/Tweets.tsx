@@ -14,7 +14,7 @@ interface Props {
     dataTweets: Tweet[]
     updateDataTweets: (tweet: Tweet) => void
 }
-function Tweets({ user, dataTweets, updateDataTweets }: Props) {
+function Tweets({ dataTweets, updateDataTweets, user }: Props) {
     const inputFileRef = useRef<HTMLInputElement | null>(null);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [src, setSrc] = useState<string | undefined>();
@@ -35,7 +35,6 @@ function Tweets({ user, dataTweets, updateDataTweets }: Props) {
         const form = e.target as HTMLFormElement;
         const data = new FormData(form);
         const tweet = data.get('tweet') as string;
-        if (!src || !imageFile || typeof src !== 'string') return
         const newTweet = await makeTweet({ src, imageFile, tweet, user })
         //Actualizar el estado
         if (newTweet) {
@@ -83,7 +82,7 @@ function Tweets({ user, dataTweets, updateDataTweets }: Props) {
                     (dataTweets !== null && dataTweets.length >= 1) ?
                         dataTweets.map((tweet: Tweet) => {
                             return <TweetComponent
-                                user={user}
+                                user={user!}
                                 tweet={tweet}
                                 key={tweet.tweetId}
                             />
