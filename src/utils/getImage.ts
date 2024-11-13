@@ -1,4 +1,4 @@
-export function getImageOfInput(file) {
+export function getImageOfInput(file: File) {
     let result = '';
     const validTypes: string[] = ['image/jpeg', 'image/png', 'image/gif'];
     if (!validTypes.includes(file.type)) {

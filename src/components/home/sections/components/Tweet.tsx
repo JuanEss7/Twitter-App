@@ -9,7 +9,8 @@ interface Props {
     tweet: Tweet,
 }
 function TweetComponent({ tweet, user }: Props) {
-    const { handleClickDeleteTweet, handleClickUpdateTweet } = useContext(Context);
+    const context = useContext(Context);
+    const { handleClickDeleteTweet, handleClickUpdateTweet } = context!;
     return (
         <li className='tweet'>
             <img src={tweet.photoUser} alt={`Imagen del usuario ${tweet.name}`} />
