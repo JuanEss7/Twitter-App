@@ -1,6 +1,5 @@
 import { IoImageOutline } from "react-icons/io5";
 import { BsStars } from "react-icons/bs";
-import { FaTwitter } from "react-icons/fa";
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useFileReader } from "../../../hooks/useFileReader";
 import { notification } from "../../../utils/notification";
@@ -54,7 +53,7 @@ function Tweets({ dataTweets, updateDataTweets, user }: Props) {
     }, [result, errorMessage])
     return (
         <main className='section_tweets'>
-            <div><FaTwitter size={20} /><BsStars size={20} /></div>
+            <div><img src="/icon.webp" alt="Logo" /><BsStars size={20} /></div>
             <form className='container_make_tweet' onSubmit={handleSubmit}>
                 <img src={user.photoURL!} alt="Imagen del usuario" />
                 <div className="container_tweet">

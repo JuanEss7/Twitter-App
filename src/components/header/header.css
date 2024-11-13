@@ -16,6 +16,10 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    & img {
+        width: 40px;
+    }
 }
 
 @media screen and (width >=768px) {

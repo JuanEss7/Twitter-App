@@ -26,7 +26,8 @@
 
     &:has(input[type='checkbox']:checked) {
         width: 250px;
-        background-color: #1b2937;
+        background-color: #000000;
+        z-index: 20;
 
         & .content_user {
             z-index: 10;

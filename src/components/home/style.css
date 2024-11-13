@@ -46,7 +46,6 @@
     width: 100%;
     height: fit-content;
     border: 1px solid rgba(255, 255, 255, 0.298);
-
     &>img {
         width: 40px;
         height: 40px;
@@ -110,7 +109,7 @@
     }
 }
 
-@media screen and (width>=850px) {
+@media screen and (width>=1000px) {
     .container-home {
         grid-template-columns: 1fr 3fr 1fr;
         width: 90dvw;

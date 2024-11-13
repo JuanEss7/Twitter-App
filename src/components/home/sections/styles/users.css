@@ -5,6 +5,7 @@
     height: 100%;
     top: 3rem;
     right: 0;
+    max-width: 300px;
 
     & label {
         width: 100%;
@@ -83,6 +84,8 @@
 
     &:has(input[type='checkbox']:checked) {
         width: 250px;
+        background-color: #000000;
+        z-index: 20;
 
         & .content_search_user {
             z-index: 10;
