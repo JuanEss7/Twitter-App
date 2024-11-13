@@ -5,16 +5,16 @@ import { Tweet } from "../../../../../interfaces/tweet";
 import { User } from "../../../../../interfaces/user";
 import { notification } from "../../../../../utils/notification";
 interface Props {
-    src: string,
+    src?: string,
     user: User,
     tweet: string,
-    imageFile: File
+    imageFile?: File | null
 }
 export async function makeTweet({ src, tweet, user, imageFile }: Props) {
     const tweetId = crypto.randomUUID();
     let imageTweetUrl;
     if (src) {
-        const response = await saveTweetPhotoInStorage({ base64: src, image: imageFile, tweetId })
+        const response = await saveTweetPhotoInStorage({ base64: src, image: imageFile!, tweetId })
         if (!response?.ok) {
             notification({ message: 'Ocurrio un error al subir la imagen del tweet, intentalo mas tarde', type: 'error' });
             return

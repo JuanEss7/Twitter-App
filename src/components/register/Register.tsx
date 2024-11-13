@@ -12,8 +12,9 @@ function Register() {
         const data = new FormData(form);
         const email = data.get('email') as string;
         const password = data.get('password') as string;
-        await regiterUserDb({ email, password })
+        await regiterUserDb({ email, password, context: context! })
         navigate('/nickname');
+        return
     }
     useEffect(() => {
         if (!context) {

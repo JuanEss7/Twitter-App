@@ -9,38 +9,27 @@ import { TailSpin } from 'react-loader-spinner'
 import './style.css'
 function Home() {
     const context = useContext(Context);
-    const [userInfo, setUserInfo] = useState<User>()
+    const [userInfo, setUserInfo] = useState<User>();
+    const [hasCheckedContext, setHasCheckedContext] = useState(false);
     const navigate = useNavigate();
     useEffect(() => {
-        if (!context) {
-            navigate("/")
-            return
-        }
-        const { fillStateDataTweets } = context;
-        fillStateDataTweets()
-    }, [context, navigate])
-    useEffect(() => {
-        if (!context) {
-            navigate("/login");
+        if (hasCheckedContext || !context) {
             return;
         }
-        const { user } = context;
-        if (user === null) {
-            navigate('/login')
-            return
+        const { fillStateDataTweets, user } = context;
+        if (user === null || user.nick === '' || user.nick === undefined || user.nick === null) {
+            navigate('/login');
+            return;
         }
-        if (user.nick === '' || user.nick === undefined || user.nick === null) {
-            navigate('/login')
-            return
-        }
-        setUserInfo(user)
-    }, [navigate, context])
-
+        setUserInfo(user);
+        fillStateDataTweets();
+        setHasCheckedContext(true);
+    }, [context, hasCheckedContext, navigate, userInfo]);
     return (
         <div className='container-home'>
             {userInfo && context ?
                 <>
-                    <Perfil user={userInfo} />
+                    <Perfil user={context.user!} />
                     <Tweets
                         user={userInfo}
                         dataTweets={context.dataTweets}

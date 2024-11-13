@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
 import Header from "../components/header/Header";
 import { User } from "../interfaces/user";
 import { onAuthStateChanged } from 'firebase/auth'
@@ -64,9 +64,9 @@ export default function ContextProvider({ children }: ContextProviderProps) {
     function updateDataTweets(tweet: Tweet) {
         setDataTweets(prev => [tweet, ...prev])
     }
-    function setUserProfile(user: User | null) {
-        setUser(user)
-    }
+    const setUserProfile = useCallback((userInfo: User | null) => {
+        setUser(userInfo)
+    }, [])
     useEffect(() => {
         onAuthStateChanged(auth, (usercount) => {
             if (usercount) {

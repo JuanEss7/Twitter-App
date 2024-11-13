@@ -1,55 +1,55 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FaArrowRight } from 'react-icons/fa';
 import { ImSearch } from "react-icons/im";
-import { IoMdClose } from "react-icons/io";
 import { User } from '../../../interfaces/user';
-import { getAllUsersOfDb } from '../../../actions/db/getAllUsers';
 import { useDebounce } from '../../../hooks/useDebounce';
 import { Tweet } from '../../../interfaces/tweet';
-import ButtonFollow from './components/ButtonFollow';
 import { updateUser } from '../../../actions/db/updateUser';
-import TweetComponent from './components/Tweet';
-import { Context } from '../../../context/context';
+import { getAllUsers } from './functions/users/getAllUsers';
+import ModalUser from './components/ModalUser';
+import UserCard from './components/UserCard';
 import './styles/users.css'
 interface Props {
     user: User
-    setUserProfile: (user: User) => void
+    setUserProfile: (user: User) => void,
+    dataTweets: Tweet[]
+
 }
-function Users({ user, setUserProfile }: Props) {
-    const { dataTweets } = useContext(Context);
+function Users({ dataTweets, setUserProfile, user }: Props) {
     const [check, setCheck] = useState(false);
     const [users, setUsers] = useState<User[]>([]);
     const [search, setSearch] = useState('');
     const [userSeach, setUserSearch] = useState<User[]>([]);
     const [following, setFollowing] = useState<string[]>([]);
     const [userModalInfo, setUserModalInfo] = useState<User>();
-    const [tweetsUserModal, setTweetsUserModal] = useState<Tweet[]>([]);
     const [showModal, setShowModal] = useState(false);
-    const [selectInfo, setSelectInfo] = useState<'tweets' | "retweets">('tweets');
     const [result] = useDebounce(search);
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const value = e.target.value;
         setSearch(value)
     }
-    function handleChangeSelect(e: React.ChangeEvent<HTMLSelectElement>) {
-        const value = e.target.value as "tweet" | "retweet";
-        setSelectInfo(value)
+    function setStateUsers(users: User[] | []) {
+        setUsers(users)
     }
-    async function getAllUsers() {
-        const { ok, usersInDb } = await getAllUsersOfDb({ uid: user?.uid });
-        if (!ok) {
-            setUsers([])
-        }
-        setUsers(usersInDb)
+    function closeModal() {
+        setShowModal(false)
+    }
+    function openModal() {
+        setShowModal(true)
+    }
+    function updateUsersFollowing(usersFollowing: string[]) {
+        setFollowing(usersFollowing)
+    }
+    function updateUserModalInfo(user: User) {
+        setUserModalInfo(user)
     }
     useEffect(() => {
         if (!user) {
             return
         }
-        getAllUsers();
-        setFollowing(user.following)
-    }, [])
-
+        getAllUsers({ user, setStateUsers });
+        setFollowing(user.following!)
+    }, [user])
     useEffect(() => {
         if (result === '') {
             setUserSearch(users)
@@ -60,37 +60,19 @@ function Users({ user, setUserProfile }: Props) {
     }, [result, users])
     useEffect(() => {
         const newInfoUser = { ...user, following: following };
-        updateUser({ newInfoUser })
-            .then(res => console.log({ res }))
-            .catch(err => console.log({ err }));
-        setUserProfile(newInfoUser)
-    }, [following])
-    useEffect(() => {
-        if (userModalInfo === undefined || userModalInfo === null) {
-            return
-        }
-        if (dataTweets === null || dataTweets === undefined) {
-            return
-        }
-        console.log({ selectInfo })
-        if (selectInfo === 'retweets') {
-            setTweetsUserModal(dataTweets.filter((tweet: Tweet) => tweet.retweet.includes(userModalInfo.uid)));
-        } else {
-            setTweetsUserModal(dataTweets.filter((tweet: Tweet) => tweet.uid === userModalInfo.uid));
-        }
-    }, [userModalInfo, dataTweets, selectInfo])
-    useEffect(() => {
-        const body = document.querySelector('body') as HTMLBodyElement;
-        if (showModal) {
-            body.classList.add('no-scroll');
-        } else {
-            body.classList.remove('no-scroll');
-        }
-
-        return () => {
-            body.classList.remove('no-scroll');
+        const updateUserInfo = async () => {
+            try {
+                const res = await updateUser({ newInfoUser });
+                if (res) {
+                    setUserProfile(newInfoUser);
+                    return
+                }
+            } catch (err) {
+                console.error('Error al actualizar el usuario:', err);
+            }
         };
-    }, [showModal])
+        updateUserInfo();
+    }, [following, user, setUserProfile])
     return (
         <aside className='section_users'>
             <label>
@@ -114,66 +96,30 @@ function Users({ user, setUserProfile }: Props) {
                     {
                         userSeach.length >= 1 ?
                             userSeach.map(user => {
-                                return <li
-                                    className='user_card'
-                                    key={user?.uid}
-                                >
-                                    <img src={user?.photoURL} alt={`Imagen del usurio ${user.name}`} />
-                                    <div>
-                                        <h5
-                                            onClick={() => {
-                                                setUserModalInfo(user);
-                                                setShowModal(true)
-                                            }}
-                                        >{user?.name}</h5>
-                                        <span className='nick'>@{user?.nick}</span>
-                                    </div>
-                                    <ButtonFollow
-                                        user={user}
-                                        following={following}
-                                        setFollowing={setFollowing}
-                                        style={{ position: 'absolute', right: '.4rem', padding: '.5rem .4rem' }}
-                                    />
-                                </li>
+                                return <UserCard
+                                    following={following}
+                                    openModal={openModal}
+                                    updateUserModalInfo={updateUserModalInfo}
+                                    updateUsersFollowing={updateUsersFollowing}
+                                    user={user}
+                                    key={user.uid}
+                                />
                             })
                             :
                             <p style={{ marginBottom: '1rem' }}>No hay usuarios</p>
                     }
                 </ul>
 
-                {(userModalInfo && showModal) && <div className={`container-modal ${showModal ? 'visible' : ''}`}>
-                    <IoMdClose className='icon_close_modal' fill='#fff' size={30} onClick={() => setShowModal(false)} />
-                    <div className='container_user_info_modal'>
-                        <img
-                            src={`${userModalInfo?.photoURL}`}
-                            alt={`Imagen del usurio ${userModalInfo.name}`}
-                        />
-                        <h3>{userModalInfo?.name}</h3>
-                        <span className='nick'>@{userModalInfo?.nick}</span>
-                        <ButtonFollow
-                            user={userModalInfo}
-                            following={following}
-                            setFollowing={setFollowing}
-                        />
-                        <select value={selectInfo} onChange={handleChangeSelect}>
-                            <option value="tweets">Tweets</option>
-                            <option value="retweets">Retweets</option>
-                        </select>
-                        <ul>
-                            {tweetsUserModal.length >= 1 ?
-                                tweetsUserModal.map(tweet => {
-                                    return <TweetComponent
-                                        tweet={tweet}
-                                        user={user}
-                                        key={tweet.tweetId}
-                                    />
-                                })
-                                :
-                                <span>No hay {selectInfo}</span>
-                            }
-                        </ul>
-                    </div>
-                </div>
+                {(userModalInfo && showModal) &&
+                    <ModalUser
+                        closeModal={closeModal}
+                        dataTweets={dataTweets}
+                        following={following}
+                        showModal={showModal}
+                        user={user!}
+                        userModalInfo={userModalInfo}
+                        updateUsersFollowing={updateUsersFollowing}
+                    />
                 }
             </div>
         </aside>
