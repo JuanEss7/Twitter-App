@@ -6,6 +6,5 @@ export function dataUrlToArrayBuffer(dataUrl: string) {
     for (let i = 0; i < byteString.length; i++) {
         arrayBuffer[i] = byteString.charCodeAt(i);
     }
-    console.log({ buffer: arrayBuffer.buffer })
     return arrayBuffer.buffer;
 }

@@ -19,7 +19,6 @@ function NickName() {
         if (!inputFile) {
             return;
         }
-        console.log({ inputFile })
         setImageToSave(inputFile)
         setFileReader(inputFile)
     }
@@ -30,14 +29,11 @@ function NickName() {
         inputRef?.current?.click()
     }
     useEffect(() => {
-        console.log("nickanme")
         if (!context) {
-            console.log("sadasdas")
             navigate('/')
             return
         }
         const { user } = context;
-        console.log({ user })
         if (!user) {
             navigate('/')
             return
@@ -64,7 +60,6 @@ function NickName() {
             notification({ message: 'Completa los campos por favor', type: 'error' });
             return
         }
-        console.log({ imageToSave: imageToSave?.name })
         await updateUserInfo({ context: context!, imageToSave: imageToSave!, name, nick, base64: result! })
         navigate(`/home/${nick}`)
     }
