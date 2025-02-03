@@ -1,12 +1,16 @@
 import { onAuthStateChanged } from "firebase/auth";
-import { useEffect } from "react";
+import { createContext, ReactNode, useEffect } from "react";
 import { auth } from "../firebase/firebase";
-import { useUserStore } from "../context/store/user_store";
 import { getUserInfoById } from "../actions/db/getUserInfo";
 import { useNavigate } from "react-router-dom";
 import { notification } from "../utils/notification";
+import { useUserStore } from "../store/user_store";
+interface ContextProps {
+    children: ReactNode
+}
+const AuthListenerContext = createContext<ContextProps | null>(null)
 //Componente que cuando se haya renderizado tendra un useEffect que escuchara todas las funciones de firebase auth
-function AuthListener() {
+function AuthListenerProvider({children}: ContextProps) {
     const setUserInfo = useUserStore(state => state.setUserState)
     const navigete = useNavigate()
     useEffect(() => {
@@ -15,13 +19,16 @@ function AuthListener() {
         //Si es ejecuta el signout el usercount sera null
         const unsubscribe = onAuthStateChanged(auth, async (usercount) => {
             if (usercount) {
-                const { email, photoURL, uid,} = usercount;
-                const { find,message,userInfo } = await getUserInfoById(uid!);
+                const { email, photoURL, uid} = usercount;
+                if(!uid) return
+                console.log({usercount})
+                const { find,message,userInfo } = await getUserInfoById(uid);
                 if(!find){
                     notification({message,type:'error'})
-                    setTimeout(()=>{
-                        navigete('/')
-                    },3000)
+                    navigete('/')
+                    // setTimeout(()=>{
+                        
+                    // },3000)
                     return
                 }
                 //Actulizando contexto de usuario
@@ -33,8 +40,12 @@ function AuthListener() {
             }
         });
         return () => unsubscribe()
-    }, [setUserInfo]);
-    return null
+    }, [setUserInfo,navigete]);
+    return (
+        <AuthListenerContext.Provider value={null}>
+            {children}
+        </AuthListenerContext.Provider>
+    )
 }
 
-export default AuthListener;
+export default AuthListenerProvider;
