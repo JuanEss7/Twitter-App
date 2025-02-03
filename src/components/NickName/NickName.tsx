@@ -1,13 +1,14 @@
-import React, { FormEvent, useContext, useEffect, useRef, useState } from 'react'
-import { Context } from '../../context/context'
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { notification } from '../../utils/notification';
 import { useFileReader } from '../../hooks/useFileReader';
 import defaultImage from '/perfil.webp'
-import { updateUserInfo } from './functions/UpdateUserInfo';
 import './style.css'
+import { useUserStore } from '../../store/user_store';
+
 function NickName() {
-    const context = useContext(Context);
+    const user = useUserStore(state => state.user)
+    const updatePhotoUrlUser = useUserStore(state => state.updatePhotoUrlUser)
     const [imageToSave, setImageToSave] = useState<File>()//imagen firebase
     const [src, setSrc] = useState<string>(defaultImage);
     const { result, setFileReader, errorMessage } = useFileReader()//imagen cargada
@@ -29,16 +30,11 @@ function NickName() {
         inputRef?.current?.click()
     }
     useEffect(() => {
-        if (!context) {
-            navigate('/')
-            return
-        }
-        const { user } = context;
         if (!user) {
             navigate('/')
             return
         }
-    }, [navigate, context])
+    }, [navigate,user])
     //Efecto que cambiara el src de la imagen una vez sea leido en el hook useFileReader
     useEffect(() => {
         if (errorMessage !== undefined) {
@@ -60,8 +56,11 @@ function NickName() {
             notification({ message: 'Completa los campos por favor', type: 'error' });
             return
         }
-        await updateUserInfo({ context: context!, imageToSave: imageToSave!, name, nick, base64: result! })
-        navigate(`/home/${nick}`)
+        const response = await updatePhotoUrlUser({imageToSave: imageToSave!, name, nick, base64: result! })
+        if(response){
+            navigate(`/home/${nick}`)
+            return
+        }
     }
     return (
         <>
