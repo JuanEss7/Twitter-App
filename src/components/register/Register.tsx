@@ -1,10 +1,10 @@
-import { FormEvent, useContext, useEffect } from "react";
+import { FormEvent, useEffect} from "react";
 import { Link, useNavigate } from "react-router-dom"
-import { Context } from "../../context/context";
-import { regiterUserDb } from "./functions/RegisterUserDB";
+import { useUserStore } from "../../store/user_store";
 
 function Register() {
-    const context = useContext(Context);
+    const registerUser = useUserStore(state => state.register)
+    const logOut = useUserStore(state => state.logOut)
     const navigate = useNavigate();
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -12,18 +12,14 @@ function Register() {
         const data = new FormData(form);
         const email = data.get('email') as string;
         const password = data.get('password') as string;
-        await regiterUserDb({ email, password, context: context! })
+        await registerUser({email,password})
         navigate('/nickname');
         return
     }
-    useEffect(() => {
-        if (!context) {
-            return
-        }
-        const { setUserProfile } = context;
-        //Reset de informacion de usuario al momento de cargar el componente
-        setUserProfile(null)
-    }, [context])
+    useEffect(()=>{
+        //Limpindo informacion de usuario al momento de renderizar el componente
+        logOut()
+    },[logOut])
     return (
         <>
             <form onSubmit={handleSubmit} className="register-form form">
