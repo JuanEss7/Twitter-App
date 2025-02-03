@@ -30,8 +30,7 @@ function Login() {
     }
     useEffect(()=>{
         if(user !== undefined && user.nick){
-            // navigate(`/home/${user.nick}`);
-            console.log({user})
+            navigate(`/home/${user.nick}`);
             return
         }
     },[user, navigate])
