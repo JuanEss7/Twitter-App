@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
-import { User } from '../../../interfaces/user';
+// import { User } from '../../../interfaces/user';
 import { logOut } from '../../../actions/session/logout';
 import './styles/perfil.css'
+import { useUserStore } from '../../../store/user_store';
 
-interface Props {
-    user: User
-}
-function Perfil({ user }: Props) {
+// interface Props {
+//     user: User
+// }
+function Perfil() {
+    const user = useUserStore(state => state.user)
     const [check, setCheck] = useState(false);
     const navigate = useNavigate();
     function handleClick() {
