@@ -1,15 +1,15 @@
 import { create } from "zustand";
-import { User } from "../../interfaces/user";
-import { loginWithEmail } from "../../actions/session/login";
-import { notification } from "../../utils/notification";
-import { getUserInfoById } from "../../actions/db/getUserInfo";
-import { logOut } from "../../actions/session/logout";
-import { registerUserWithEmail } from "../../actions/session/register";
-import { setUserPhotoInStorage } from "../../actions/storage/saveImageUser";
-import { verifyNickInDb } from "../../actions/db/verifyExistUserNick";
-import { verifyExistUserName } from "../../actions/db/verifyExistUserName";
-import { getUserImageOfStorage } from "../../actions/storage/getImageUser";
-import { updateUser } from "../../actions/db/updateUser";
+import { User } from "../interfaces/user";
+import { loginWithEmail } from "../actions/session/login";
+import { notification } from "../utils/notification";
+import { setUserPhotoInStorage } from "../actions/storage/saveImageUser";
+import { verifyNickInDb } from "../actions/db/verifyExistUserNick";
+import { verifyExistUserName } from "../actions/db/verifyExistUserName";
+import { getUserImageOfStorage } from "../actions/storage/getImageUser";
+import { updateUser } from "../actions/db/updateUser";
+import { registerUserWithEmail } from "../actions/session/register";
+import { logOut } from "../actions/session/logout";
+
 interface LoginProps {
     email: string,
     password: string
@@ -26,11 +26,11 @@ interface UserStoreInterface {
     logIn: ({ email, password }: LoginProps) => Promise<void>
     register: ({ email, password }: LoginProps) => Promise<void>
     logOut: () => void
-    updateImageUser: ({ base64, imageToSave, name, nick }: Props) => Promise<void>
+    updateInfoUser: ({ base64, imageToSave, name, nick }: Props) => Promise<void>
 }
 export const useUserStore = create<UserStoreInterface>((set, get) => ({
     user: undefined,
-    setUserState: (userinfo) => set(state => ({ user: userinfo })),
+    setUserState: (userinfo) => set(() => ({ user: userinfo })),
     register: async ({ email, password }) => {
         //Registrando en firebaseDb
         const { ok, message } = await registerUserWithEmail({ email, password });
@@ -54,7 +54,7 @@ export const useUserStore = create<UserStoreInterface>((set, get) => ({
         logOut()
         //LA ACTUALIZACION DEL ESTADO SE HACE EN EL COMPONENTE AUTHLISTENER
     },
-    updateImageUser: async ({ base64, imageToSave, name, nick }) => {
+    updateInfoUser: async ({ base64, imageToSave, name, nick }) => {
         const { user, setUserState } = get()
         const { ok, uploadRef } = await setUserPhotoInStorage({ uid: user!.uid, image: imageToSave, base64 });
         if (!ok) {
