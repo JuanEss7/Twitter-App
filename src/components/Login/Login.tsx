@@ -1,11 +1,20 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { FormEvent, useContext, useEffect } from 'react';
-import { Context } from '../../context/context';
+import { FormEvent, useEffect } from 'react';
 import { notification } from '../../utils/notification';
-import { getUserInfo } from './functions/GetUserInfo';
+import { useUserStore } from '../../store/user_store';
 import './style.css'
+ // useEffect(() => {
+    //     if (!context) {
+    //         return
+    //     }
+    //     const { setUserProfile } = context;
+    //     //Reset de informacion de usuario al momento de cargar el componente
+    //     setUserProfile(null)
+    // }, [context])
 function Login() {
-    const context = useContext(Context);
+    const user = useUserStore(state => state.user)
+    const login = useUserStore(state => state.logIn)
+    const logOut = useUserStore(state => state.logOut)
     const navigate = useNavigate();
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -13,25 +22,24 @@ function Login() {
         const data = new FormData(form);
         const email = data.get('email') as string;
         const password = data.get('password') as string;
-        const { setUserProfile } = context!;
         if (!email || !password) {
             notification({ message: "Completa los campos por favor.", type: 'error' })
             return
         }
-        const userInfo = await getUserInfo({ email, password, setUserProfile });
-        if (userInfo) {
-            navigate(`/home/${userInfo.nick}`);
-            return
-        }
+        await login({email,password})
     }
-    useEffect(() => {
-        if (!context) {
+    useEffect(()=>{
+        if(user !== undefined && user.nick){
+            // navigate(`/home/${user.nick}`);
+            console.log({user})
             return
         }
-        const { setUserProfile } = context;
-        //Reset de informacion de usuario al momento de cargar el componente
-        setUserProfile(null)
-    }, [context])
+    },[user, navigate])
+    useEffect(()=>{
+        //Limpindo informacion de usuario al momento de renderizar el componente
+        logOut()
+    },[logOut])
+
     return (
         <form className='login-form form' onSubmit={handleSubmit}>
             <h2>Ingresar</h2>
