@@ -24,8 +24,8 @@ function UserCard({ user, following, openModal, updateUsersFollowing, updateUser
                     <span className='nick'>@{user?.nick}</span>
                 </div>
                 <ButtonFollow
-                    user={user}
-                    following={following}
+                    userId={user!.uid!}
+                    following={following!}
                     updateUsersFollowing={updateUsersFollowing}
                     style={{ position: 'absolute', right: '.4rem', padding: '.5rem .4rem' }}
                 />
