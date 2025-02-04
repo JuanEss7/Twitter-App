@@ -1,14 +1,14 @@
 import { getAllUsersOfDb } from "../../../../../actions/db/getAllUsers";
 import { User } from "../../../../../interfaces/user";
+import { notification } from "../../../../../utils/notification";
 interface Props {
     user: User,
-    setStateUsers: (users: User[] | []) => void
 }
-export async function getAllUsers({ user, setStateUsers }: Props) {
-    const { ok, usersInDb } = await getAllUsersOfDb({ uid: user?.uid });
+export async function getAllUsers({ user }: Props) {
+    const { ok, usersInDb } = await getAllUsersOfDb({ uid: user.uid! });
     if (!ok) {
-        setStateUsers([])
-        return
+        notification({message:'Error al cargar los usuarios',type:'error'})
+        return []
     }
-    setStateUsers(usersInDb)
+    return usersInDb
 }
