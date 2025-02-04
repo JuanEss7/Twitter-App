@@ -34,7 +34,7 @@ function ModalUser({ user, dataTweets, following, userModalInfo, showModal, clos
             return
         }
         if (selectInfo === 'retweets') {
-            setTweetsUserModal(dataTweets.filter((tweet: Tweet) => tweet.retweet.includes(userModalInfo.uid)));
+            setTweetsUserModal(dataTweets.filter((tweet: Tweet) => tweet.retweet.includes(userModalInfo.uid!)));
         } else {
             setTweetsUserModal(dataTweets.filter((tweet: Tweet) => tweet.uid === userModalInfo.uid));
         }
@@ -63,7 +63,7 @@ function ModalUser({ user, dataTweets, following, userModalInfo, showModal, clos
                     <h3>{userModalInfo?.name}</h3>
                     <span className='nick'>@{userModalInfo?.nick}</span>
                     <ButtonFollow
-                        user={userModalInfo}
+                        userId={userModalInfo.uid!}
                         following={following}
                         updateUsersFollowing={updateUsersFollowing}
                     />

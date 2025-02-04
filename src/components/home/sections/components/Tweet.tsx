@@ -22,7 +22,7 @@ function TweetComponent({ tweet, user }: Props) {
                     <div
                         className="icons_container-div"
                         onClick={() => handleClickUpdateTweet({ tweet, action: 'like' })}>
-                        {tweet.like.includes(user.uid) ?
+                        {tweet.like.includes(user.uid!) ?
                             <IoMdHeart
                                 size={20}
                                 className="icon"
@@ -42,7 +42,7 @@ function TweetComponent({ tweet, user }: Props) {
                         <AiOutlineRetweet
                             size={20}
                             className="icon"
-                            fill={`${tweet.retweet.includes(user.uid) ? '#19aee6' : '#fff'}`}
+                            fill={`${tweet.retweet.includes(user.uid!) ? '#19aee6' : '#fff'}`}
                         />
                         {tweet.retweet.length}
                     </div>
