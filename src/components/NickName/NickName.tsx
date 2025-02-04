@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { notification } from '../../utils/notification';
 import { useFileReader } from '../../hooks/useFileReader';
 import defaultImage from '/perfil.webp'
-import './style.css'
 import { useUserStore } from '../../store/user_store';
+import './style.css'
 
 function NickName() {
     const user = useUserStore(state => state.user)

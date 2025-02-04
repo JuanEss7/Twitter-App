@@ -12,8 +12,8 @@ createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route path='/' element={<Register />}></Route>
         <Route path='/login' element={<Login />}></Route>
-        {/* <Route path='/nickname' element={<NickName />}></Route> */}
-        {/* <Route path='/home/:nick' element={<Home />}></Route> */}
+        <Route path='/nickname' element={<NickName />}></Route>
+        <Route path='/home/:nick' element={<Home />}></Route>
       </Routes>
     </AuthListenerProvider>
   </BrowserRouter>
