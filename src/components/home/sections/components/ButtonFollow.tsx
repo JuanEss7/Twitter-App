@@ -1,22 +1,21 @@
-import { User } from '../../../../interfaces/user'
 interface Props {
-    user: User,
+    userId: string,
     following: string[],
     style?: React.CSSProperties
     updateUsersFollowing: (users: string[]) => void,
 }
-function ButtonFollow({ user, following, updateUsersFollowing, style }: Props) {
-    function handleClick(userid: string) {
+function ButtonFollow({ userId, following, updateUsersFollowing, style }: Props) {
+    function handleClick(user_id: string) {
         //Verificar si ya esta siguiendo al usuario.
         // const isFollow = user.follow.includes(userid);
-        const isFollowing = following.includes(userid);
+        const isFollowing = following.includes(user_id);
         const newArray = structuredClone(following);
         //Agregar o eliminar una vez verificado)
         if (isFollowing) {
-            updateUsersFollowing(newArray.filter(id => id !== userid))
+            updateUsersFollowing(newArray.filter(id => id !== user_id))
             return
         } else {
-            newArray.push(userid)
+            newArray.push(user_id)
             updateUsersFollowing(newArray)
             return
         }
@@ -25,11 +24,11 @@ function ButtonFollow({ user, following, updateUsersFollowing, style }: Props) {
     return (
         <button
             type='button'
-            className={`buttonFollow ${following.includes(user.uid) ? 'following' : 'follow'}`}
-            onClick={() => { handleClick(user.uid) }}
+            className={`buttonFollow ${following.includes(userId) ? 'following' : 'follow'}`}
+            onClick={() => { handleClick(userId) }}
             style={style ?? {}}
         >
-            {following.includes(user.uid)
+            {following.includes(userId)
                 ?
                 <>
                     <span>Siguiendo</span>
