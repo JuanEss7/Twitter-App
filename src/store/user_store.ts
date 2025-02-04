@@ -27,6 +27,7 @@ interface UserStoreInterface {
     register: ({ email, password }: LoginProps) => Promise<void>
     logOut: () => void
     updatePhotoUrlUser: ({ base64, imageToSave, name, nick }: Props) => Promise<boolean>
+    updateInfoFollwingUser:(following: string[])=> Promise<void>
 }
 export const useUserStore = create<UserStoreInterface>((set, get) => ({
     user: undefined,
@@ -56,7 +57,7 @@ export const useUserStore = create<UserStoreInterface>((set, get) => ({
     },
     updatePhotoUrlUser: async ({ base64, imageToSave, name, nick }) => {
         const { user, setUserState } = get()
-        const { ok, uploadRef } = await setUserPhotoInStorage({ uid: user!.uid, image: imageToSave, base64 });
+        const { ok, uploadRef } = await setUserPhotoInStorage({ uid: user!.uid!, image: imageToSave, base64 });
         if (!ok) {
             notification({ message: 'Ocurrio un error al subir la imagen.', type: 'error' });
             return false
@@ -91,5 +92,22 @@ export const useUserStore = create<UserStoreInterface>((set, get) => ({
         //Actualizando informacion de usuario en el contexto
         setUserState(newInfoUser)
         return true
+    },
+    updateInfoFollwingUser: async (following:string[]) =>  {
+        const {user , setUserState} = get()
+        if(!user) return
+        const newInfoUser = { ...user,following: following };
+        try {
+            //Actualizando informacion en db
+            const res = await updateUser({ newInfoUser });
+            if (res) {
+                setUserState(newInfoUser);
+                return
+            }
+        } catch (err) {
+            console.error(err);
+            notification({message:'Error al actualizar informacion de el usuario',type:'error'})
+            return
+        }
     },
 }))
