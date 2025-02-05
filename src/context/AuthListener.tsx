@@ -22,14 +22,10 @@ function AuthListenerProvider({children}: ContextProps) {
             if (usercount) {
                 const { email, photoURL, uid} = usercount;
                 if(!uid) return
-                console.log({usercount})
                 const { find,message,userInfo } = await getUserInfoById(uid);
                 if(!find){
                     notification({message,type:'error'})
                     navigete('/')
-                    // setTimeout(()=>{
-                        
-                    // },3000)
                     return
                 }
                 //Actulizando contexto de usuario
