@@ -9,6 +9,7 @@ import { getUserImageOfStorage } from "../actions/storage/getImageUser";
 import { updateUser } from "../actions/db/updateUser";
 import { registerUserWithEmail } from "../actions/session/register";
 import { logOut } from "../actions/session/logout";
+import { useTweetStore } from "./twitter_store";
 
 interface LoginProps {
     email: string,
@@ -51,9 +52,13 @@ export const useUserStore = create<UserStoreInterface>((set, get) => ({
         //LA ACTUALIZACION DEL ESTADO SE HACE EN EL COMPONENTE AUTHLISTENER
     },
     logOut: () => {
+        const setUserState = get().setUserState;
+        const resetDataTweets = useTweetStore.getState().resetDataTweets
+        //Reseteando estados de usuario y de tweets
+        setUserState(undefined)
+        resetDataTweets()
         //LogOut en firebase
         logOut()
-        //LA ACTUALIZACION DEL ESTADO SE HACE EN EL COMPONENTE AUTHLISTENER
     },
     updatePhotoUrlUser: async ({ base64, imageToSave, name, nick }) => {
         const { user, setUserState } = get()
