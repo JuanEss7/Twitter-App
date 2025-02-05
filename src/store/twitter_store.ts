@@ -27,6 +27,7 @@ interface MakeTweetInterface {
 interface TweetStoreInterface {
     tweets: Tweet[]
     addNewTweet: (tweet: Tweet) => void
+    resetDataTweets: ()=> void
     fillStateDataTweets: () => Promise<void>
     handleActionTweet: ({ action, tweet, userId }: ActionTweetInterface) => Promise<void>
     handleDeleteTweet: ({ tweetId, creatorTweetId }: DeleteTweetInterface) => Promise<void>
@@ -127,4 +128,5 @@ export const useTweetStore = create<TweetStoreInterface>((set, get) => ({
         addNewTweet(newTweet)
         return newTweet
     },
+    resetDataTweets :()=> set(()=> ({tweets:[]}))
 }))
