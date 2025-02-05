@@ -4,16 +4,15 @@ import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useFileReader } from "../../../hooks/useFileReader";
 import { notification } from "../../../utils/notification";
 import { Tweet } from '../../../interfaces/tweet';
-import { User } from "../../../interfaces/user";
 import TweetComponent from "./components/Tweet";
-import { makeTweet } from "./functions/tweets/MakeTweet";
+import { useUserStore } from "../../../store/user_store";
+import { useTweetStore } from "../../../store/twitter_store";
 import './styles/tweets.css'
-interface Props {
-    user: User,
-    dataTweets: Tweet[]
-    updateDataTweets: (tweet: Tweet) => void
-}
-function Tweets({ dataTweets, updateDataTweets, user }: Props) {
+
+function Tweets() {
+    const user = useUserStore(state => state.user)
+    const makeTweet = useTweetStore(state => state.makeTweet)
+    const dataTweets = useTweetStore(state => state.tweets)
     const inputFileRef = useRef<HTMLInputElement | null>(null);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [src, setSrc] = useState<string | undefined>();
@@ -34,10 +33,9 @@ function Tweets({ dataTweets, updateDataTweets, user }: Props) {
         const form = e.target as HTMLFormElement;
         const data = new FormData(form);
         const tweet = data.get('tweet') as string;
-        const newTweet = await makeTweet({ src, imageFile, tweet, user })
-        //Actualizar el estado
+        const newTweet = await makeTweet({ src, imageFile, tweet, user: user! })
+        //Reseteando informacion
         if (newTweet) {
-            updateDataTweets(newTweet)
             setSrc(undefined);
             setFileReader(undefined)
             data.set('tweet', '')
@@ -55,7 +53,7 @@ function Tweets({ dataTweets, updateDataTweets, user }: Props) {
         <main className='section_tweets'>
             <div><img src="/icon.webp" alt="Logo" /><BsStars size={20} /></div>
             <form className='container_make_tweet' onSubmit={handleSubmit}>
-                <img src={user.photoURL!} alt="Imagen del usuario" />
+                <img src={user!.photoURL!} alt="Imagen del usuario" />
                 <div className="container_tweet">
                     <textarea name='tweet' placeholder='Escribe algo...' />
                     {src && <img className='image_tweet' src={src} alt="Imagen de tweet" />}
@@ -81,7 +79,7 @@ function Tweets({ dataTweets, updateDataTweets, user }: Props) {
                     (dataTweets !== null && dataTweets.length >= 1) ?
                         dataTweets.map((tweet: Tweet) => {
                             return <TweetComponent
-                                user={user!}
+                                userId={user!.uid!}
                                 tweet={tweet}
                                 key={tweet.tweetId}
                             />

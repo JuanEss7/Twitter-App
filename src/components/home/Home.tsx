@@ -1,45 +1,31 @@
-import { useContext, useEffect, useState } from 'react'
-import { Context } from '../../context/context'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Perfil from './sections/Perfil';
-import { User } from '../../interfaces/user';
 import Users from './sections/Users';
-import Tweets from './sections/Tweets';
 import { TailSpin } from 'react-loader-spinner'
+import { useUserStore } from '../../store/user_store';
+import { useTweetStore } from '../../store/twitter_store';
+import Tweets from './sections/Tweets';
 import './style.css'
 function Home() {
-    const context = useContext(Context);
-    const [userInfo, setUserInfo] = useState<User>();
-    const [hasCheckedContext, setHasCheckedContext] = useState(false);
+    const user = useUserStore(state => state.user)
+    const fillStateDataTweets = useTweetStore(state => state.fillStateDataTweets)
     const navigate = useNavigate();
-    useEffect(() => {
-        if (hasCheckedContext || !context) {
-            return;
+    useEffect(()=>{
+        if(!user && user === undefined){
+            navigate('/login')
+            return
         }
-        const { fillStateDataTweets, user } = context;
-        if (user === null || user.nick === '' || user.nick === undefined || user.nick === null) {
-            navigate('/login');
-            return;
-        }
-        setUserInfo(user);
-        fillStateDataTweets();
-        setHasCheckedContext(true);
-    }, [context, hasCheckedContext, navigate, userInfo]);
+        //Cargando los tweets de firebase db
+        fillStateDataTweets()
+    },[user,navigate,fillStateDataTweets])
     return (
         <div className='container-home'>
-            {userInfo && context ?
+            {user ?
                 <>
-                    <Perfil user={context.user!} />
-                    <Tweets
-                        user={userInfo}
-                        dataTweets={context.dataTweets}
-                        updateDataTweets={context.updateDataTweets}
-                    />
-                    <Users
-                        user={userInfo}
-                        setUserProfile={context.setUserProfile}
-                        dataTweets={context.dataTweets}
-                    />
+                    <Perfil />
+                    <Tweets />
+                    <Users />
                 </> :
                 <TailSpin
                     visible={true}
