@@ -4,18 +4,18 @@ import { ImSearch } from "react-icons/im";
 import { User } from '../../../interfaces/user';
 import { useDebounce } from '../../../hooks/useDebounce';
 import { Tweet } from '../../../interfaces/tweet';
-import { updateUser } from '../../../actions/db/updateUser';
 import { getAllUsers } from './functions/users/getAllUsers';
 import ModalUser from './components/ModalUser';
 import UserCard from './components/UserCard';
 import './styles/users.css'
+import { useUserStore } from '../../../store/user_store';
 interface Props {
-    user: User
-    setUserProfile: (user: User) => void,
-    dataTweets: Tweet[]
+    // dataTweets: Tweet[]
 
 }
-function Users({ dataTweets, setUserProfile, user }: Props) {
+function Users() {
+    const user = useUserStore(state=> state.user)
+    const updateInfoFollwingUser= useUserStore(state => state.updateInfoFollwingUser)
     const [check, setCheck] = useState(false);
     const [users, setUsers] = useState<User[]>([]);
     const [search, setSearch] = useState('');
@@ -28,18 +28,18 @@ function Users({ dataTweets, setUserProfile, user }: Props) {
         const value = e.target.value;
         setSearch(value)
     }
-    function setStateUsers(users: User[] | []) {
-        setUsers(users)
-    }
     function closeModal() {
         setShowModal(false)
     }
     function openModal() {
         setShowModal(true)
     }
+    //Actualiza la informacion de usuarios que sigue al momento de dar click,en state(following) y db
     function updateUsersFollowing(usersFollowing: string[]) {
-        setFollowing(usersFollowing)
+        setFollowing((prev)=> [...prev,...usersFollowing])
+        updateInfoFollwingUser(usersFollowing);
     }
+    //Actualiza la informacion de usurio al momento de dar click
     function updateUserModalInfo(user: User) {
         setUserModalInfo(user)
     }
@@ -47,9 +47,13 @@ function Users({ dataTweets, setUserProfile, user }: Props) {
         if (!user) {
             return
         }
-        getAllUsers({ user, setStateUsers });
+        //Al momento de cargar el componente cargar los usuarios existentes
+        getAllUsers({ user}).then(users =>  setUsers(users));
+        //Actualiza todos los usuarios que sigue
         setFollowing(user.following!)
     }, [user])
+    //Efecto relacionado con la busqueda de usuario
+    //Filtrara los usuarios alamacenados en el estaro users
     useEffect(() => {
         if (result === '') {
             setUserSearch(users)
@@ -58,21 +62,6 @@ function Users({ dataTweets, setUserProfile, user }: Props) {
         const userFind = users.filter(user => user.nick?.toLocaleLowerCase().includes(result.toLocaleLowerCase()));
         setUserSearch(userFind)
     }, [result, users])
-    useEffect(() => {
-        const newInfoUser = { ...user, following: following };
-        const updateUserInfo = async () => {
-            try {
-                const res = await updateUser({ newInfoUser });
-                if (res) {
-                    setUserProfile(newInfoUser);
-                    return
-                }
-            } catch (err) {
-                console.error('Error al actualizar el usuario:', err);
-            }
-        };
-        updateUserInfo();
-    }, [following, user, setUserProfile])
     return (
         <aside className='section_users'>
             <label>
@@ -95,14 +84,14 @@ function Users({ dataTweets, setUserProfile, user }: Props) {
                 <ul>
                     {
                         userSeach.length >= 1 ?
-                            userSeach.map(user => {
+                            userSeach.map(userinfo => {
                                 return <UserCard
                                     following={following}
                                     openModal={openModal}
                                     updateUserModalInfo={updateUserModalInfo}
                                     updateUsersFollowing={updateUsersFollowing}
-                                    user={user}
-                                    key={user.uid}
+                                    user={userinfo}
+                                    key={userinfo.uid}
                                 />
                             })
                             :
@@ -113,7 +102,7 @@ function Users({ dataTweets, setUserProfile, user }: Props) {
                 {(userModalInfo && showModal) &&
                     <ModalUser
                         closeModal={closeModal}
-                        dataTweets={dataTweets}
+                        dataTweets={[]}
                         following={following}
                         showModal={showModal}
                         user={user!}
