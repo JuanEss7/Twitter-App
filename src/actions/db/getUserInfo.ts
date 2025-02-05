@@ -42,8 +42,7 @@ export async function getUserInfoById(uid: string) {
             find: true,
             userInfo
         }
-    } catch (error) {
-        console.log(error)
+    } catch  {
         return {
             find: false,
             message: 'Ocurrio un error, intentalo mas tarde.'
