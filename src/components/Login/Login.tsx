@@ -3,18 +3,12 @@ import { FormEvent, useEffect } from 'react';
 import { notification } from '../../utils/notification';
 import { useUserStore } from '../../store/user_store';
 import './style.css'
- // useEffect(() => {
-    //     if (!context) {
-    //         return
-    //     }
-    //     const { setUserProfile } = context;
-    //     //Reset de informacion de usuario al momento de cargar el componente
-    //     setUserProfile(null)
-    // }, [context])
+import { useTweetStore } from '../../store/twitter_store';
 function Login() {
     const user = useUserStore(state => state.user)
     const login = useUserStore(state => state.logIn)
     const logOut = useUserStore(state => state.logOut)
+    const resetDataTweets = useTweetStore(state => state.resetDataTweets)
     const navigate = useNavigate();
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -37,7 +31,9 @@ function Login() {
     useEffect(()=>{
         //Limpindo informacion de usuario al momento de renderizar el componente
         logOut()
-    },[logOut])
+        //Reseteando informacion de estado de tweets en caso de existir
+        resetDataTweets()
+    },[logOut,resetDataTweets])
 
     return (
         <form className='login-form form' onSubmit={handleSubmit}>

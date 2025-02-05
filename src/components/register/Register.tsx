@@ -1,10 +1,12 @@
 import { FormEvent, useEffect} from "react";
 import { Link, useNavigate } from "react-router-dom"
 import { useUserStore } from "../../store/user_store";
+import { useTweetStore } from "../../store/twitter_store";
 
 function Register() {
     const registerUser = useUserStore(state => state.register)
     const logOut = useUserStore(state => state.logOut)
+    const resetDataTweets = useTweetStore(state => state.resetDataTweets)
     const navigate = useNavigate();
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -19,7 +21,9 @@ function Register() {
     useEffect(()=>{
         //Limpindo informacion de usuario al momento de renderizar el componente
         logOut()
-    },[logOut])
+        //Reseteando informacion de estado de tweets en caso de existir
+        resetDataTweets()
+    },[logOut,resetDataTweets])
     return (
         <>
             <form onSubmit={handleSubmit} className="register-form form">
