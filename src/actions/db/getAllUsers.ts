@@ -15,8 +15,7 @@ export async function getAllUsersOfDb({ uid }: Props) {
             ok: true,
             usersInDb
         }
-    } catch (error) {
-        console.log('Error al traer usuarios de db', error);
+    } catch  {
         return {
             ok: false,
             usersInDb: []
