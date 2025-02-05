@@ -5,6 +5,7 @@ import { getUserInfoById } from "../actions/db/getUserInfo";
 import { useNavigate } from "react-router-dom";
 import { notification } from "../utils/notification";
 import { useUserStore } from "../store/user_store";
+import Header from "../components/header/Header";
 interface ContextProps {
     children: ReactNode
 }
@@ -43,6 +44,7 @@ function AuthListenerProvider({children}: ContextProps) {
     }, [setUserInfo,navigete]);
     return (
         <AuthListenerContext.Provider value={null}>
+            <Header/>
             {children}
         </AuthListenerContext.Provider>
     )
