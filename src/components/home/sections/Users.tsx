@@ -41,7 +41,7 @@ function Users() {
         setUserModalInfo(user)
     }
     useEffect(() => {
-        if (!user) {
+        if (!user || user === undefined) {
             return
         }
         //Al momento de cargar el componente cargar los usuarios existentes
