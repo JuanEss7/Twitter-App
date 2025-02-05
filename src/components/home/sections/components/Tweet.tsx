@@ -1,16 +1,14 @@
 import { AiOutlineRetweet } from 'react-icons/ai'
 import { IoMdHeart, IoMdHeartEmpty, IoMdTrash } from 'react-icons/io'
-import { User } from '../../../../interfaces/user'
 import { Tweet } from '../../../../interfaces/tweet'
-import { useContext } from 'react';
-import { Context } from '../../../../context/context';
+import { useTweetStore } from '../../../../store/twitter_store';
 interface Props {
-    user: User,
+    userId: string,
     tweet: Tweet,
 }
-function TweetComponent({ tweet, user }: Props) {
-    const context = useContext(Context);
-    const { handleClickDeleteTweet, handleClickUpdateTweet } = context!;
+function TweetComponent({ tweet, userId}: Props) {
+    const handleActionTweet = useTweetStore(state => state.handleActionTweet)
+    const handleDeleteTweet = useTweetStore(state => state.handleDeleteTweet)
     return (
         <li className='tweet'>
             <img src={tweet.photoUser} alt={`Imagen del usuario ${tweet.name}`} />
@@ -21,8 +19,8 @@ function TweetComponent({ tweet, user }: Props) {
                 <section className="icons_container">
                     <div
                         className="icons_container-div"
-                        onClick={() => handleClickUpdateTweet({ tweet, action: 'like' })}>
-                        {tweet.like.includes(user.uid!) ?
+                        onClick={() => handleActionTweet({ tweet, action: 'like',userId })}>
+                        {tweet.like.includes(userId) ?
                             <IoMdHeart
                                 size={20}
                                 className="icon"
@@ -38,19 +36,19 @@ function TweetComponent({ tweet, user }: Props) {
                     </div>
                     <div
                         className="icons_container-div"
-                        onClick={() => handleClickUpdateTweet({ tweet, action: 'retweet' })}>
+                        onClick={() => handleActionTweet({ tweet, action: 'retweet',userId })}>
                         <AiOutlineRetweet
                             size={20}
                             className="icon"
-                            fill={`${tweet.retweet.includes(user.uid!) ? '#19aee6' : '#fff'}`}
+                            fill={`${tweet.retweet.includes(userId) ? '#19aee6' : '#fff'}`}
                         />
                         {tweet.retweet.length}
                     </div>
 
-                    {user.uid === tweet.uid &&
+                    {userId === tweet.uid &&
                         <div
                             className="icons_container-div delete"
-                            onClick={() => handleClickDeleteTweet({ tweetId: tweet.tweetId, creatorTweetId: tweet.uid })}>
+                            onClick={() => handleDeleteTweet({ tweetId: tweet.tweetId, creatorTweetId: tweet.uid, userId })}>
                             <IoMdTrash
                                 size={20}
                                 className="icon"
