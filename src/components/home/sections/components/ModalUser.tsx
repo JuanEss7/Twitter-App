@@ -6,7 +6,7 @@ import TweetComponent from './Tweet';
 import { User } from '../../../../interfaces/user';
 import { notification } from '../../../../utils/notification';
 interface Props {
-    user: User
+    userId: string
     dataTweets: Tweet[],
     userModalInfo: User,
     showModal: boolean,
@@ -15,7 +15,7 @@ interface Props {
     updateUsersFollowing: (users: string[]) => void,
 }
 type Select = "tweets" | "retweets";
-function ModalUser({ user, dataTweets, following, userModalInfo, showModal, closeModal, updateUsersFollowing }: Props) {
+function ModalUser({ userId, dataTweets, following, userModalInfo, showModal, closeModal, updateUsersFollowing }: Props) {
     const [tweetsUserModal, setTweetsUserModal] = useState<Tweet[]>([]);
     const [selectInfo, setSelectInfo] = useState<Select>("tweets");
     function handleChangeSelect(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -76,7 +76,7 @@ function ModalUser({ user, dataTweets, following, userModalInfo, showModal, clos
                             tweetsUserModal.map(tweet => {
                                 return <TweetComponent
                                     tweet={tweet}
-                                    user={user}
+                                    userId={userId}
                                     key={tweet.tweetId}
                                 />
                             })

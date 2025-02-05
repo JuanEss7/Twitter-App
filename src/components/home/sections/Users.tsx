@@ -3,19 +3,16 @@ import { FaArrowRight } from 'react-icons/fa';
 import { ImSearch } from "react-icons/im";
 import { User } from '../../../interfaces/user';
 import { useDebounce } from '../../../hooks/useDebounce';
-import { Tweet } from '../../../interfaces/tweet';
 import { getAllUsers } from './functions/users/getAllUsers';
 import ModalUser from './components/ModalUser';
 import UserCard from './components/UserCard';
 import './styles/users.css'
 import { useUserStore } from '../../../store/user_store';
-interface Props {
-    // dataTweets: Tweet[]
-
-}
+import { useTweetStore } from '../../../store/twitter_store';
 function Users() {
     const user = useUserStore(state=> state.user)
     const updateInfoFollwingUser= useUserStore(state => state.updateInfoFollwingUser)
+    const dataTweets = useTweetStore(state => state.tweets)
     const [check, setCheck] = useState(false);
     const [users, setUsers] = useState<User[]>([]);
     const [search, setSearch] = useState('');
@@ -39,7 +36,7 @@ function Users() {
         setFollowing((prev)=> [...prev,...usersFollowing])
         updateInfoFollwingUser(usersFollowing);
     }
-    //Actualiza la informacion de usurio al momento de dar click
+    //Se encarga de cargar la informacion de usurio respectiva en el modal
     function updateUserModalInfo(user: User) {
         setUserModalInfo(user)
     }
@@ -99,13 +96,13 @@ function Users() {
                     }
                 </ul>
 
-                {(userModalInfo && showModal) &&
+                {(userModalInfo && showModal && user) &&
                     <ModalUser
                         closeModal={closeModal}
-                        dataTweets={[]}
+                        dataTweets={dataTweets}
                         following={following}
                         showModal={showModal}
-                        user={user!}
+                        userId={user.uid!}
                         userModalInfo={userModalInfo}
                         updateUsersFollowing={updateUsersFollowing}
                     />
