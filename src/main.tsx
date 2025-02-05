@@ -4,7 +4,7 @@ import Register from './components/register/Register.tsx'
 import NickName from './components/NickName/NickName.tsx'
 import Login from './components/Login/Login.tsx'
 import Home from './components/home/Home.tsx'
-import AuthListenerProvider from './auth/AuthListener.tsx'
+import AuthListenerProvider from './context/AuthListener.tsx'
 import './index.css'
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
