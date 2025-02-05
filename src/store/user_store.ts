@@ -8,7 +8,7 @@ import { verifyExistUserName } from "../actions/db/verifyExistUserName";
 import { getUserImageOfStorage } from "../actions/storage/getImageUser";
 import { updateUser } from "../actions/db/updateUser";
 import { registerUserWithEmail } from "../actions/session/register";
-import { logOut } from "../actions/session/logout";
+import { logOutOfFb } from "../actions/session/logout";
 import { useTweetStore } from "./twitter_store";
 
 interface LoginProps {
@@ -58,7 +58,7 @@ export const useUserStore = create<UserStoreInterface>((set, get) => ({
         setUserState(undefined)
         resetDataTweets()
         //LogOut en firebase
-        logOut()
+        logOutOfFb()
     },
     updatePhotoUrlUser: async ({ base64, imageToSave, name, nick }) => {
         const { user, setUserState } = get()
